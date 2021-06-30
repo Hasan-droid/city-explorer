@@ -25,7 +25,7 @@
 2. https://locationiq.com/
 
 
-![Cycle](./public/assets/img/Cycle.PNG)
+![Cycle](client/public/assets/img/Cycle.png)
 
 ```
 Name of feature: made API map
