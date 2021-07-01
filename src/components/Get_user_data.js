@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import {Form , Button , Image} from 'react-bootstrap'
 import axios from 'axios';
 import Alert_message from './Alert_message';
+import Weather from './Weather';
 
 export class Get_user_data extends Component {
     constructor(props){
@@ -12,7 +13,8 @@ export class Get_user_data extends Component {
             cityData:{},
             displayData:false,
             error:"",
-            alertMessage:false
+            alertMessage:false,
+            weatherData :[]
 
         }
     }
@@ -28,11 +30,15 @@ export class Get_user_data extends Component {
      e.preventDefault();
      try{
          const axiosData=await axios.get(`https://eu1.locationiq.com/v1/search.php?key=pk.c8c3522ba2ff5a610f1fc08e7591854f&q=${this.state.cityName}&format=json`)
+         const axiosLocalAPI=await axios.get(`${process.env.REACT_APP_BACKEND_URL}/weather?lat=${this.state.cityData.lat}&lon=${this.state.cityData.lon}`)
+         console.log(axiosLocalAPI.data);
+        console.log(process.env.REACT_BACKEND_URL)
          this.setState(
             {
                 cityData:axiosData.data[0],
                 displayData:true,
-                alert:false
+                alert:false,
+                weatherData:axiosLocalAPI.data
             }
          )
      } 
@@ -73,11 +79,12 @@ export class Get_user_data extends Component {
             <p>
               {`latitude: ${this.state.cityData.lat}, longitude: ${this.state.cityData.lon}`}
             </p>
-        </div>
-          
-    
+        </div>               
+        }
+        { this.state.weatherData.map(item=>{
+            return <Weather desc={item.description} date={item.valid_data}/>
+        })
            
-        
         }
       
             </div>
