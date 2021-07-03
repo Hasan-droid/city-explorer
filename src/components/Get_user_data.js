@@ -4,6 +4,7 @@ import {Form , Button , Image} from 'react-bootstrap'
 import axios from 'axios';
 import Alert_message from './Alert_message';
 import Weather from './Weather';
+import Movies from './Movies';
 
 export class Get_user_data extends Component {
     constructor(props){
@@ -14,7 +15,10 @@ export class Get_user_data extends Component {
             displayData:false,
             error:"",
             alertMessage:false,
-            weatherData :[]
+            weatherData :[],
+            moviesData:[],
+            lat:"",
+            lon:""
 
         }
     }
@@ -29,18 +33,38 @@ export class Get_user_data extends Component {
     getRecivedData=async (e)=>{
      e.preventDefault();
      try{
+        
          const axiosData=await axios.get(`https://eu1.locationiq.com/v1/search.php?key=pk.c8c3522ba2ff5a610f1fc08e7591854f&q=${this.state.cityName}&format=json`)
-         const axiosLocalAPI=await axios.get(`${process.env.REACT_APP_BACKEND_URL}/weather?lat=${this.state.cityData.lat}&lon=${this.state.cityData.lon}`)
-         console.log(axiosLocalAPI.data);
-        console.log(process.env.REACT_BACKEND_URL)
-         this.setState(
+         this.setState({
+            cityData:axiosData.data[0],
+            lon:axiosData.data[0].lon,
+            lat:axiosData.data[0].lat
+         })
+         const axiosLocalAPI=await axios.get(`${process.env.REACT_APP_BACKEND_URL}/weather?lat=${this.state.lat}&lon=${this.state.lon}`)
+         
+          this.setState(
             {
-                cityData:axiosData.data[0],
+               
                 displayData:true,
                 alert:false,
-                weatherData:axiosLocalAPI.data
+                weatherData:axiosLocalAPI.data,
+               
+
             }
          )
+         
+         const axiosMovieAPI=await axios.get(`${process.env.REACT_APP_BACKEND_URL}/movie?city=${this.state.cityName}`)
+         
+         
+         this.setState(
+           {
+              moviesData:axiosMovieAPI.data,
+           }
+
+        )
+        console.log(this.state.moviesData);
+         
+        
      } 
      catch(error){
          this.setState(
@@ -81,12 +105,19 @@ export class Get_user_data extends Component {
             </p>
         </div>               
         }
+       
+
         { this.state.weatherData.map(item=>{
             return <Weather desc={item.description} date={item.valid_data}/>
         })
+    }
+        { this.state.moviesData.map(item=>{
+            return <Movies title={item.original_title} img={item.poster_path} vote={item.vote_count} />
+        })
            
         }
-      
+    
+    
             </div>
            
             
