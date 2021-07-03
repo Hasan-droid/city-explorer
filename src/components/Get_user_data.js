@@ -5,6 +5,8 @@ import axios from 'axios';
 import Alert_message from './Alert_message';
 import Weather from './Weather';
 import Movies from './Movies';
+import Map from './Map';
+import { stat } from 'fs';
 
 export class Get_user_data extends Component {
     constructor(props) {
@@ -93,45 +95,10 @@ export class Get_user_data extends Component {
                         Explore!
                     </Button>
                 </Form>
-                {this.state.displayData &&
-                    <div>
-                        <p>
-                            {this.state.cityData.display_name}
-                        </p>
-
-                        <Image src={`https://maps.locationiq.com/v3/staticmap?key=pk.88bdc34a015f169659efd4fa8583736c&center=${this.state.cityData.lat},${this.state.cityData.lon}&zoom=10`} rounded />
-                        <p>
-                            {`latitude: ${this.state.cityData.lat}, longitude: ${this.state.cityData.lon}`}
-                        </p>
-                    </div>
-                }
-
-                {this.state.weatherData[0] &&
-
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>date</th>
-                                <th>description</th>
-                            </tr>
-                        </thead>
-                        {this.state.weatherData.map(item => {
-                            return (
-                                <tbody>
-                                    <Weather desc={item.description} date={item.valid_data} />
-                                </tbody>
-                            )
-
-                        })
-                        }
-                    </Table>
-                }
-               <CardColumns>
-                    {this.state.moviesData.map(item => {
-                        return <Movies title={item.original_title} img={item.poster_path} vote={item.vote_count} />
-                    })
-                    }
-</CardColumns>
+               <Map displayData={this.state.displayData} cityData={this.state.cityData}/>
+                <Weather weatherdata={this.state.weatherData}/>
+                <Movies moviesData={this.state.moviesData}/>
+               
 
             </div>
 
